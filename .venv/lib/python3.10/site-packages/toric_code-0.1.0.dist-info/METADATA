@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: toric-code
+Version: 0.1.0
+Summary: Step-by-step toric code implementation in PennyLane.
+Requires-Python: >=3.10
+Requires-Dist: pennylane
+Requires-Dist: pennylane-lightning
+Requires-Dist: numpy
+Requires-Dist: matplotlib

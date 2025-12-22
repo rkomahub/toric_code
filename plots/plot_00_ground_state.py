@@ -1,6 +1,8 @@
 # Graph 0: Ground state (no excitations)
 
 import numpy as np
+import matplotlib
+matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 
 from toric.circuits import make_device, make_excitation_qnode
