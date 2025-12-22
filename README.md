@@ -2,7 +2,6 @@
 
 **A step-by-step implementation of the toric code, its ground states, excitations, and anyonic braiding**
 
----
 
 ## Overview
 
@@ -20,7 +19,8 @@ The toric code is a paradigmatic model of **topological order**, featuring:
 The goal of this repository is not just to *simulate* the toric code, but to make its
 **physics transparent, visual, and reproducible**.
 
----
+The toric code is not just a quantum error-correcting code — it is a **topological theory disguised as a circuit**. Enjoy bending space, dragging anyons around holes, and watching global phases emerge from local moves.
+
 
 ## Features
 
@@ -40,7 +40,6 @@ The goal of this repository is not just to *simulate* the toric code, but to mak
 
 ✅ High-quality lattice visualizations with matplotlib
 
----
 
 ## Repository Structure
 
@@ -71,7 +70,6 @@ toric_code/
 └── figures / outputs
 ```
 
----
 
 ## Installation (Recommended Workflow)
 
@@ -99,7 +97,6 @@ This is required so that the `toric` package (located in `src/`) is correctly
 
 discoverable by Python.
 
----
 
 ## Running the Examples
 
@@ -117,7 +114,6 @@ Each script:
 - measures stabilizers
 - visualizes the lattice and excitations
 
----
 
 ## Plotting Backend (Important)
 
@@ -139,7 +135,6 @@ If you prefer file output instead, simply replace `plt.show()` with:
 plt.savefig("figure.png", dpi=200, bbox_inches="tight")
 ```
 
----
 
 ## Physics Background
 
@@ -152,7 +147,6 @@ plt.savefig("figure.png", dpi=200, bbox_inches="tight")
 
 The Hadamard test is used to extract this phase directly from the quantum circuit.
 
----
 
 ## Testing
 
@@ -164,7 +158,6 @@ A full pytest suite verifies:
 - non-contractible loops
 - braiding and phase detection
 
----
 
 ## Dependencies
 
@@ -176,8 +169,34 @@ A full pytest suite verifies:
 
 All Python dependencies are listed in `pyproject.toml`.
 
----
 
-## Final Note
+## References
 
-The toric code is not just a quantum error-correcting code — it is a **topological theory disguised as a circuit**. Enjoy bending space, dragging anyons around holes, and watching global phases emerge from local moves.
+1. **A. Yu. Kitaev**,  
+   *Fault-tolerant quantum computation by anyons*,  
+   arXiv:quant-ph/9707021  
+   https://arxiv.org/pdf/quant-ph/9707021
+
+2. **A. G. Fowler, M. Mariantoni, J. M. Martinis, A. N. Cleland**,  
+   *Surface codes: Towards practical large-scale quantum computation*,  
+   arXiv:1208.0928  
+   https://arxiv.org/pdf/1208.0928
+
+3. **K. J. Satzinger et al.**,  
+   *Realizing topologically ordered states on a quantum processor*,  
+   arXiv:2104.01180  
+   https://arxiv.org/pdf/2104.01180
+
+4. **L. Savary, L. Balents**,  
+   *Quantum Spin Liquids: A Review*,  
+   arXiv:1601.03742  
+   https://arxiv.org/abs/1601.03742
+
+5. **A. Hamma, W. Zhang, S. Haas, D. A. Lidar**,  
+   *A Pedagogical Overview on 2D and 3D Toric Codes and the Origin of Their Topological Orders*,  
+   arXiv:1712.01258  
+   https://arxiv.org/pdf/1712.01258
+
+6. **PennyLane QML Demo**,  
+   *Modelling the toric code on a quantum computer*,  
+   https://pennylane.ai/qml/demos/tutorial_toric_code
