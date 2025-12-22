@@ -1,0 +1,21 @@
+[project]
+name = "toric-code"
+version = "0.1.0"
+description = "Step-by-step toric code implementation in PennyLane."
+requires-python = ">=3.10"
+dependencies = [
+  "pennylane",
+  "pennylane-lightning",
+  "numpy",
+  "matplotlib",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
