@@ -1,49 +1,76 @@
 import pennylane as qml
+
 from toric.lattice import Wire, mod, all_wires
+from toric.groups import build_zgroup_sites
 from toric.state_prep import state_prep
 
-# ----------------------------
+# ------------------------------------------------------------
 # Geometry / device
-# ----------------------------
+# ------------------------------------------------------------
 width, height = 6, 4
+
 data_wires = all_wires(width, height)
-anc = Wire(-1, -1)
+anc = Wire(-1, -1)                       # ancilla wire
 dev = qml.device("lightning.qubit", wires=data_wires + [anc])
 
+# ------------------------------------------------------------
+# Magnetic anyon pair (open X-string)
+# ------------------------------------------------------------
+x_string_m = [(1, 1), (2, 1)]   # same as before
 
-def loop(z_loop):
-    """Closed Z-string (Wilson loop)"""
+# ------------------------------------------------------------
+# Choose a CLOSED Z-loop = plaquette stabilizer
+# with ODD overlap with x_string_m
+# ------------------------------------------------------------
+zgroup_sites = build_zgroup_sites(width, height)
+
+def overlap(a, b):
+    return len(set(a).intersection(set(b)))
+
+k = None
+for idx, plaq in enumerate(zgroup_sites):
+    if overlap(plaq, x_string_m) == 1:
+        k = idx
+        break
+
+assert k is not None, "No plaquette with odd overlap found"
+
+z_loop = zgroup_sites[k]
+
+print("Using plaquette:", z_loop)
+print("Overlap with X-string:", set(z_loop).intersection(set(x_string_m)))
+
+# ------------------------------------------------------------
+# Closed Z-loop operator (UNITARY)
+# ------------------------------------------------------------
+def Z_loop_operator():
     for (i, j) in z_loop:
         qml.PauliZ(mod(i, j, width, height))
 
-
+# ------------------------------------------------------------
+# Hadamard test
+# ------------------------------------------------------------
 @qml.qnode(dev, diff_method=None)
-def hadamard_test(x_prep, z_prep, z_loop):
+def hadamard_test():
+    # 1. prepare |psi> = X_string |G>
     state_prep(width, height)
-
-    for (i, j) in x_prep:
+    for (i, j) in x_string_m:
         qml.PauliX(mod(i, j, width, height))
-    for (i, j) in z_prep:
-        qml.PauliZ(mod(i, j, width, height))
 
-    qml.Hadamard(anc)
-    qml.ctrl(loop, control=anc)(z_loop)
+    # ancilla |0>
     qml.Hadamard(anc)
 
+    # 3. controlled-U (U = closed Z-loop)
+    qml.ctrl(Z_loop_operator, control=anc)()
+
+    # 4. second Hadamard
+    qml.Hadamard(anc)
+
+    # 5. measure Z on ancilla
     return qml.expval(qml.PauliZ(anc))
 
-# ----------------------------
-# Tutorial-style geometry
-# ----------------------------
-
-# create one e pair
-x_prep = [(1, 1), (2, 1)] 
-
-# create one m pair
-z_prep = [(1, 3)]
-
-# CLOSED loop enclosing the e anyon
-z_loop = [(2, 3), (2, 2), (2, 1), (3, 1), (3, 2), (2, 3)]
-
-val = hadamard_test(x_prep, z_prep, z_loop)
-print("Braiding phase m around e:", val) # (x around z)
+# ------------------------------------------------------------
+# Run
+# ------------------------------------------------------------
+val = hadamard_test()
+print("Hadamard-test result ⟨Z_anc⟩ =", f"{val:+.6f}")

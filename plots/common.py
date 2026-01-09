@@ -42,9 +42,9 @@ def excitation_plot(
         ax.add_patch(Polygon(sites, color=z_color(val), zorder=0))
 
     handles = [
-    Patch(color="steelblue", label="X-group excitation"),
+    Patch(color="steelblue", label="X-group excitation (electric e)"),
     Patch(color="lavender", label="X-group ground"),
-    Patch(color="firebrick", label="Z-group excitation"),
+    Patch(color="firebrick", label="Z-group excitation (magnetic m)"),
     Patch(color="mistyrose", label="Z-group ground"),
     ]
     ax.legend(handles=handles, ncol=2, loc="lower left")

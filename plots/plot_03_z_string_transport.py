@@ -1,4 +1,4 @@
-# Fig 3: Z-string transporting a magnetic anyon pair
+# Fig 3: Straight Z-string (same endpoints, same electric anyons)
 
 import matplotlib.pyplot as plt
 
@@ -9,9 +9,9 @@ from .common import excitation_plot
 width, height = 6, 4
 dev = make_device(width, height)
 
-# ---- Z string path (operator) ----
+# ---- Straight Z string ----
 z_string = [(1, 2), (2, 2), (3, 2), (4, 2)]
-# ---------------------------------
+# ---------------------------
 
 qnode = make_excitation_qnode(
     dev,
@@ -29,7 +29,7 @@ z_expvals = expvals[n_x:]
 
 # Pretty printing
 fmt = lambda arr: [f"{v:+.3f}" for v in arr]
-print("Z string:", z_string)
+print("Z string (straight):", z_string)
 print("X-group expvals:", fmt(x_expvals))
 print("Z-group expvals:", fmt(z_expvals))
 
@@ -43,10 +43,10 @@ fig, ax = excitation_plot(
     height,
 )
 
-# Draw Z-string path (tutorial convention: Z ops = blue)
+# Draw Z-string path (Z ops = blue)
 xs, ys = zip(*z_string)
 ax.plot(xs, ys, color="steelblue", linewidth=6, zorder=4)
 ax.scatter(xs, ys, color="steelblue", s=80, zorder=5)
 
-plt.title("Fig 3: Z-string transporting a magnetic anyon pair")
+plt.title("Fig 3: Straight Z-string (electric anyon pair)")
 plt.show()

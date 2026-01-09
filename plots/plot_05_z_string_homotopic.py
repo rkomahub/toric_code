@@ -1,4 +1,4 @@
-# Fig 5: Homotopic Z-string (same endpoints, different route)
+# Fig 5: Homotopic Z-string (same endpoints, different interior route)
 
 import matplotlib.pyplot as plt
 
@@ -10,8 +10,8 @@ width, height = 6, 4
 dev = make_device(width, height)
 
 # ---- Alternative Z string (homotopic to Figs 3–4) ----
-# Same endpoints, different interior route
-z_string = [(1, 2), (1, 1), (2, 1), (3, 1), (4, 1)]
+# Same endpoints: (1,2) → (4,2), different interior route
+z_string = [(1, 2), (1, 1), (1, 0), (2, 0), (3, 0), (4, 0), (4, 1), (4, 2)]
 # ----------------------------------------------------
 
 qnode = make_excitation_qnode(
@@ -49,5 +49,5 @@ xs, ys = zip(*z_string)
 ax.plot(xs, ys, color="steelblue", linewidth=6, zorder=4)
 ax.scatter(xs, ys, color="steelblue", s=80, zorder=5)
 
-plt.title("Fig 5: Homotopic Z-strings (same endpoints, same physics)")
+plt.title("Fig 5: Homotopic Z-string (same endpoints, same electric anyons)")
 plt.show()

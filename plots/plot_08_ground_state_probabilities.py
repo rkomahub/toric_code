@@ -1,4 +1,6 @@
-# plots/plot_08_ground_state_probabilities.py
+# Fig 8: Distinct ground states from non-contractible X-loops
+# Logical operators change the global wavefunction
+# while leaving all local stabilizers invariant.
 
 import numpy as np
 
@@ -38,13 +40,19 @@ Px = probs(horizontal_loop)                      # X_x |G>
 Py = probs(vertical_loop)                        # X_y |G>
 Pxy = probs(horizontal_loop + vertical_loop)     # X_x X_y |G>
 
+overlap = np.dot(np.sqrt(P0), np.sqrt(Px))
+print("Bhattacharyya overlap:", overlap)
+
+# Note:
+# Ground states related by logical X-loops may have
+# identical computational-basis probabilities,
+# despite being distinct quantum states.
 
 def compare(name1, P1, name2, P2):
     diff = np.max(np.abs(P1 - P2))
     print(f"{name1} vs {name2}:")
     print(f"  max |ΔP| = {diff:.6e}")
     print()
-
 
 print("\n=== Ground-state probability comparisons ===\n")
 compare("|G>", P0, "X_x|G>", Px)

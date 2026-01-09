@@ -1,5 +1,6 @@
-# Fig 4: Bent Z-string (same endpoints, same electric anyons)
+# Graph 2: Electric anyon pair (single Z flips two X-groups)
 
+import numpy as np
 import matplotlib.pyplot as plt
 
 from toric.circuits import make_device, make_excitation_qnode
@@ -9,16 +10,16 @@ from .common import excitation_plot
 width, height = 6, 4
 dev = make_device(width, height)
 
-# ---- Bent Z string (same endpoints as Fig 3) ----
-z_string = [(1, 2), (2, 2), (3, 2), (3, 1), (3, 0), (4, 0), (4, 1), (4, 2)]
-# ------------------------------------------------
+# ---- choose a site to flip with Z ----
+single_z = [(1, 2)]   # feel free to move it later
+# -------------------------------------
 
 qnode = make_excitation_qnode(
     dev,
     width,
     height,
     x_sites=[],
-    z_sites=z_string,
+    z_sites=single_z,
 )
 
 expvals = qnode()
@@ -27,13 +28,13 @@ n_x = len(build_xgroup_sites(width, height))
 x_expvals = expvals[:n_x]
 z_expvals = expvals[n_x:]
 
-# Pretty printing
+# Pretty printing (3 decimals)
 fmt = lambda arr: [f"{v:+.3f}" for v in arr]
-print("Z string (bent):", z_string)
+print("Applied Z at:", single_z)
 print("X-group expvals:", fmt(x_expvals))
 print("Z-group expvals:", fmt(z_expvals))
 
-# Plot stabilizer excitations
+# Plot
 fig, ax = excitation_plot(
     x_expvals,
     z_expvals,
@@ -43,10 +44,8 @@ fig, ax = excitation_plot(
     height,
 )
 
-# Draw Z-string path (Z ops = blue)
-xs, ys = zip(*z_string)
-ax.plot(xs, ys, color="steelblue", linewidth=6, zorder=4)
-ax.scatter(xs, ys, color="steelblue", s=80, zorder=5)
+# Mark the physical location of the applied Z
+ax.scatter(*zip(*single_z), color="steelblue", s=120, zorder=5)
 
-plt.title("Fig 4: Bent Z-string (same endpoints, same electric anyons)")
+plt.title("Fig 2: Electric anyon pair from a single Z")
 plt.show()

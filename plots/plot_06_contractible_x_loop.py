@@ -64,6 +64,9 @@ n_x = len(xgroup_sites)
 x_expvals = expvals[:n_x]
 z_expvals = expvals[n_x:]
 
+assert all(v > 0 for v in x_expvals), "X-group excitation detected!"
+assert all(v > 0 for v in z_expvals), "Z-group excitation detected!"
+
 # pretty printing
 fmt = lambda arr: [f"{v:+.3f}" for v in arr]
 print("Applied X-groups:", block_indices)
@@ -85,6 +88,6 @@ xs, ys = zip(*boundary_loop)
 ax.plot(xs, ys, color="firebrick", linewidth=6, zorder=5)
 ax.scatter(xs, ys, color="firebrick", s=80, zorder=6)
 
-plt.title("Fig 6: Contractible X-loop (central stabilizer block)")
+plt.title("Fig 6: Contractible X-loop (no excitations)")
 plt.savefig("fig6.png", dpi=200, bbox_inches="tight")
 plt.show()
