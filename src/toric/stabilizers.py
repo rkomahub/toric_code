@@ -20,12 +20,12 @@ def plaquette_wires(x: int, y: int, Lx: int, Ly: int):
     ]
 
 def A_star(x: int, y: int, Lx: int, Ly: int):
-    """Star stabilizer A_{x,y} = product of X on the 4 star edges."""
-    return qml.prod(*[qml.PauliX(w) for w in star_wires(x, y, Lx, Ly)])
+    """Star stabilizer A_{x,y} = product of Z on the 4 star edges."""
+    return qml.prod(*[qml.PauliZ(w) for w in star_wires(x, y, Lx, Ly)])
 
 def B_plaquette(x: int, y: int, Lx: int, Ly: int):
-    """Plaquette stabilizer B_{x,y} = product of Z on the 4 plaquette edges."""
-    return qml.prod(*[qml.PauliZ(w) for w in plaquette_wires(x, y, Lx, Ly)])
+    """Plaquette stabilizer B_{x,y} = product of X on the 4 plaquette edges."""
+    return qml.prod(*[qml.PauliX(w) for w in plaquette_wires(x, y, Lx, Ly)])
 
 def all_stabilizers(Lx: int, Ly: int):
     """Lists of all star and plaquette stabilizers."""

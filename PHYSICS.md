@@ -25,33 +25,33 @@ The stabilizers are built in `groups.py`:
 
 ### Star stabilizers (electric sector)
 
-* Built by: `build_xgroup_sites(width, height)`
-* Operator: `build_xgroup_ops(...)` produces products of **PauliX** on 4 edges.
-
-So in the code:
-
-* **X-group operators are star stabilizers**
-  [
-  A_s = \prod_{e \in \text{star}(s)} X_e
-  ]
-
-**Contract:** A violation of an X-group operator (expectation value negative, ideally (-1)) represents an **electric anyon (e)**.
-
-### Plaquette stabilizers (magnetic sector)
-
 * Built by: `build_zgroup_sites(width, height)`
 * Operator: `build_zgroup_ops(...)` produces products of **PauliZ** on 4 edges.
 
 So in the code:
 
-* **Z-group operators are plaquette stabilizers**
-  [
-  B_p = \prod_{e \in \partial p} Z_e
-  ]
+* **Z-group operators are star stabilizers**
+  \[
+  A_s = \prod_{e \in \text{star}(s)} Z_e
+  \]
 
-**Contract:** A violation of a Z-group operator represents a **magnetic anyon (m)**.
+**Contract:** A violation of a Z-group operator (expectation value negative, ideally (-1)) represents an **electric anyon (e)**.
 
-> Note: This matches the standard toric code convention: stars are X-type, plaquettes are Z-type. The earlier confusion was purely about plotting/color conventions and figure titles.
+### Plaquette stabilizers (magnetic sector)
+
+* Built by: `build_xgroup_sites(width, height)`
+* Operator: `build_xgroup_ops(...)` produces products of **PauliX** on 4 edges.
+
+So in the code:
+
+* **X-group operators are plaquette stabilizers**
+  \[
+  B_p = \prod_{e \in \partial p} X_e
+  \]
+
+**Contract:** A violation of an X-group operator represents a **magnetic anyon (m)**.
+
+> Note: This matches the Kitaev toric code convention: stars are Z-type (electric), plaquettes are X-type (magnetic).
 
 ---
 
@@ -59,14 +59,14 @@ So in the code:
 
 In `excitation_plot(...)`:
 
-* X-group (stars):
+* Z-group (stars):
 
-  * `steelblue` if `x_expval < 0` (excited)
-  * `lavender` if `x_expval > 0` (ground)
-* Z-group (plaquettes):
+  * `steelblue` if `z_expval < 0` (excited)
+  * `lavender` if `z_expval > 0` (ground)
+* X-group (plaquettes):
 
-  * `firebrick` if `z_expval < 0` (excited)
-  * `mistyrose` if `z_expval > 0` (ground)
+  * `firebrick` if `x_expval < 0` (excited)
+  * `mistyrose` if `x_expval > 0` (ground)
 
 **Contract:**
 
@@ -87,15 +87,15 @@ The excitation circuit applies local Paulis in `make_excitation_qnode`:
 ### X-string (product of X along a path)
 
 If you apply an open string:
-[
+\[
 W^X(\gamma) = \prod_{e\in\gamma} X_e
-]
+\]
 then:
 
-* It **commutes** with all star stabilizers (A_s).
-* It **anticommutes** with **plaquette** stabilizers (B_p) only at the **endpoints**.
+* It **commutes** with all plaquette stabilizers (B_p).
+* It **anticommutes** with **star** stabilizers (A_s) only at the **endpoints**.
 
-**Contract:** An open X-string creates exactly **two magnetic anyons (m)**:
+**Contract:** An open X-string creates exactly **two electric anyons (e)**:
 
 * **Z-group** shows exactly **two violations** (two expvals < 0)
 * **X-group** remains all +1 (all expvals > 0)
@@ -103,15 +103,15 @@ then:
 ### Z-string (product of Z along a path)
 
 If you apply an open string:
-[
+\[
 W^Z(\gamma) = \prod_{e\in\gamma} Z_e
-]
+\]
 then:
 
-* It **commutes** with all plaquette stabilizers (B_p).
-* It **anticommutes** with **star** stabilizers (A_s) only at the **endpoints**.
+* It **commutes** with all star stabilizers (A_s).
+* It **anticommutes** with **plaquette** stabilizers (B_p) only at the **endpoints**.
 
-**Contract:** An open Z-string creates exactly **two electric anyons (e)**:
+**Contract:** An open Z-string creates exactly **two magnetic anyons (m)**:
 
 * **X-group** shows exactly **two violations**
 * **Z-group** remains all +1
@@ -169,13 +169,13 @@ A closed, non-contractible loop acts as a **logical operator**:
 
 ## 7. Ground-state preparation contract (the `state_prep`)
 
-The `state_prep(width, height)` constructs a stabilizer-like state by iterating over **X-group sites** and applying:
+The `state_prep(width, height)` constructs a stabilizer-like state by iterating over **Z-group sites** and applying:
 
 * `H` on the first qubit of the group
 * CNOTs from that control to the other three edges
-* and it explicitly **skips the last X-group**, matching the guide.
+* and it explicitly **skips the last Z-group**, matching the guide.
 
-**Contract:** After `state_prep`, measuring the X-group stabilizers (except the skipped dependency) should yield **+1** (up to numerical tolerance). The `make_ground_state_qnode` is already a partial check of this.
+**Contract:** After `state_prep`, measuring the Z-group stabilizers (except the skipped dependency) should yield **+1** (up to numerical tolerance). The `make_ground_state_qnode` is already a partial check of this.
 
 ---
 
@@ -183,13 +183,13 @@ The `state_prep(width, height)` constructs a stabilizer-like state by iterating 
 
 **Contract:** In documentation and figure captions, prefer **geometry** over Pauli letters:
 
-* X-group = **stars** = **electric sector (e anyons)**
-* Z-group = **plaquettes** = **magnetic sector (m anyons)**
+* Z-group = **stars** = **electric sector (e anyons)**
+* X-group = **plaquettes** = **magnetic sector (m anyons)**
 
 When describing strings:
 
-* **X-string creates m anyons** (violates plaquettes → Z-group)
-* **Z-string creates e anyons** (violates stars → X-group)
+* **X-string creates e anyons** (violates stars → Z-group)
+* **Z-string creates m anyons** (violates plaquettes → X-group)
 
 Colors are allowed to be arbitrary, but captions must follow physics.
 

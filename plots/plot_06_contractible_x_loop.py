@@ -1,4 +1,4 @@
-# Fig 6: Contractible X-loop (using same design as previous figures)
+# Fig 6: Contractible X-loop (no excitations)
 
 import matplotlib.pyplot as plt
 from collections import Counter
@@ -36,7 +36,7 @@ zgroup_sites = build_zgroup_sites(width, height)
 # --- CENTRAL 2×2 BLOCK OF X-GROUPS (contractible region) ---
 block_indices = [4, 5, 8, 9]  # central for 6x4
 
-# Apply all X's from these stabilizers
+# Apply all X operators from these plaquette stabilizers
 x_sites = []
 for k in block_indices:
     x_sites.extend(xgroup_sites[k])

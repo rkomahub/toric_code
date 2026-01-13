@@ -1,4 +1,4 @@
-# Fig 4: Bent Z-string (same endpoints, same electric anyons)
+# Fig 4: Bent Z-string (same endpoints, same magnetic anyons)
 
 import matplotlib.pyplot as plt
 
@@ -9,7 +9,7 @@ from .common import excitation_plot
 width, height = 6, 4
 dev = make_device(width, height)
 
-# ---- Bent Z string (same endpoints as Fig 3) ----
+# ---- Bent Z string (same endpoints as Fig 4) ----
 z_string = [(1, 2), (2, 2), (3, 2), (3, 1), (3, 0), (4, 0), (4, 1), (4, 2)]
 # ------------------------------------------------
 
@@ -48,5 +48,5 @@ xs, ys = zip(*z_string)
 ax.plot(xs, ys, color="steelblue", linewidth=6, zorder=4)
 ax.scatter(xs, ys, color="steelblue", s=80, zorder=5)
 
-plt.title("Fig 4: Bent Z-string (same endpoints, same electric anyons)")
+plt.title("Fig 4: Bent Z-string (same endpoints, same magnetic anyons)")
 plt.show()

@@ -14,31 +14,31 @@ anc = Wire(-1, -1)                       # ancilla wire
 dev = qml.device("lightning.qubit", wires=data_wires + [anc])
 
 # ------------------------------------------------------------
-# Magnetic anyon pair (open X-string)
+# Electric anyon pair (open X-string)
 # ------------------------------------------------------------
-x_string_m = [(1, 1), (2, 1)]   # same as before
+x_string_e = [(1, 1), (2, 1)]   # open X-string → electric anyons (e)
 
 # ------------------------------------------------------------
-# Choose a CLOSED Z-loop = plaquette stabilizer
-# with ODD overlap with x_string_m
+# Choose a CLOSED Z-loop = star stabilizer
+# with ODD overlap with x_string_e
 # ------------------------------------------------------------
-zgroup_sites = build_zgroup_sites(width, height)
+zgroup_sites = build_zgroup_sites(width, height)  # Z-group = stars
 
 def overlap(a, b):
     return len(set(a).intersection(set(b)))
 
 k = None
-for idx, plaq in enumerate(zgroup_sites):
-    if overlap(plaq, x_string_m) == 1:
+for idx, star in enumerate(zgroup_sites):
+    if overlap(star, x_string_e) == 1:
         k = idx
         break
 
-assert k is not None, "No plaquette with odd overlap found"
+assert k is not None, "No star with odd overlap found"
 
 z_loop = zgroup_sites[k]
 
-print("Using plaquette:", z_loop)
-print("Overlap with X-string:", set(z_loop).intersection(set(x_string_m)))
+print("Using star stabilizer:", z_loop)
+print("Overlap with X-string:", set(z_loop).intersection(set(x_string_e)))
 
 # ------------------------------------------------------------
 # Closed Z-loop operator (UNITARY)
@@ -54,10 +54,10 @@ def Z_loop_operator():
 def hadamard_test():
     # 1. prepare |psi> = X_string |G>
     state_prep(width, height)
-    for (i, j) in x_string_m:
+    for (i, j) in x_string_e:
         qml.PauliX(mod(i, j, width, height))
 
-    # ancilla |0>
+    # 2. ancilla |0> → |+>
     qml.Hadamard(anc)
 
     # 3. controlled-U (U = closed Z-loop)

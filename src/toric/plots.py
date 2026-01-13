@@ -15,23 +15,23 @@ def excitation_plot(x_expvals, z_expvals, xgroup_sites, zgroup_sites, width, hei
     from .plot_groups import misc_plot_formatting
     fig, ax = misc_plot_formatting(fig, ax, width, height)
 
-    # Draw X-groups (squares)
+    # Draw X-groups (plaquettes → magnetic sector)
     for val, sites in zip(x_expvals, xgroup_sites):
         ax.add_patch(
             Polygon(sites, color=x_color(val), zorder=0)
         )
 
-    # Draw Z-groups (squares)
+    # Draw Z-groups (stars → electric sector)
     for val, sites in zip(z_expvals, zgroup_sites):
         ax.add_patch(
             Polygon(sites, color=z_color(val), zorder=0)
         )
 
-    # Legend (explains colors)
+    # Legend (Kitaev convention)
     handles = [
-        Patch(color="navy", label="X-group excitation"),
+        Patch(color="black", label="X-group excitation (magnetic m)"),
         Patch(color="lavender", label="X-group ground"),
-        Patch(color="maroon", label="Z-group excitation"),
+        Patch(color="red", label="Z-group excitation (electric e)"),
         Patch(color="mistyrose", label="Z-group ground"),
     ]
 

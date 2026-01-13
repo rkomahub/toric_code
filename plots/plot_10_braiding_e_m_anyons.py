@@ -1,9 +1,9 @@
 # Braiding sanity check (auto-pick):
-# - Create an m-pair with an open X-string.
-# - Find a contractible closed Z-loop (plaquette stabilizer) with odd overlap.
+# - Create an e-pair with an open X-string.
+# - Find a contractible closed Z-loop (star stabilizer) with odd overlap.
 # - Verify: (i) Z-loop alone creates no excitations, (ii) overlap is odd, (iii) anyons unchanged.
 #
-# NOTE: In toric code, the mutual braiding is encoded in operator algebra (odd intersection).
+# NOTE: In toric code, mutual braiding is encoded in operator algebra (odd intersection).
 # Stabilizer plots show anyon locations, not the global braiding phase.
 
 import numpy as np
@@ -23,18 +23,20 @@ from plots.common import excitation_plot  # keep consistent with your project la
 def overlap_sites(a, b):
     return sorted(set(a).intersection(set(b)))
 
-def find_odd_overlap_plaquette(zgroup_sites, x_string):
+def find_odd_overlap_star(zgroup_sites, x_string):
     # Prefer overlap=1 (simplest braiding witness)
-    for idx, plaq in enumerate(zgroup_sites):
-        if len(overlap_sites(plaq, x_string)) == 1:
+    for idx, star in enumerate(zgroup_sites):
+        if len(overlap_sites(star, x_string)) == 1:
             return idx
     # Fallback: any odd overlap
-    for idx, plaq in enumerate(zgroup_sites):
-        if len(overlap_sites(plaq, x_string)) % 2 == 1 and len(overlap_sites(plaq, x_string)) > 0:
+    for idx, star in enumerate(zgroup_sites):
+        ov = len(overlap_sites(star, x_string))
+        if ov % 2 == 1 and ov > 0:
             return idx
     return None
 
 def build_stabilizer_ops(xgroup_sites, zgroup_sites, width, height):
+    # X-group ops = ∏X (plaquettes), Z-group ops = ∏Z (stars)
     x_ops = [
         qml.prod(*(qml.PauliX(mod(i, j, width, height)) for (i, j) in sites))
         for sites in xgroup_sites
@@ -59,25 +61,27 @@ def polygon_edges(poly):
 width, height = 6, 4
 dev = make_device(width, height)
 
-xgroup_sites = build_xgroup_sites(width, height)  # X-group stabilizers (stars)
-zgroup_sites = build_zgroup_sites(width, height)  # Z-group stabilizers (plaquettes)
+# Kitaev contract:
+# - X-group stabilizers: plaquettes, ∏X, magnetic sector (m)
+# - Z-group stabilizers: stars,     ∏Z, electric sector (e)
+xgroup_sites = build_xgroup_sites(width, height)  # X-group stabilizers (plaquettes)
+zgroup_sites = build_zgroup_sites(width, height)  # Z-group stabilizers (stars)
 n_x = len(xgroup_sites)
 
-# Pick a simple open X-string that definitely creates an m-pair
-# (You can change this later; script will adapt.)
-x_string_m = [(1, 1), (2, 1)]
+# Pick a simple open X-string that creates an e-pair
+x_string_e = [(1, 1), (2, 1)]
 
-# Auto-find a plaquette Z-loop with odd overlap (ideally 1) with that X-string
-k = find_odd_overlap_plaquette(zgroup_sites, x_string_m)
-assert k is not None, "No plaquette with odd overlap found. Try a different x_string_m."
+# Auto-find a star Z-loop with odd overlap (ideally 1) with that X-string
+k = find_odd_overlap_star(zgroup_sites, x_string_e)
+assert k is not None, "No star with odd overlap found. Try a different x_string_e."
 
 z_loop_sites = zgroup_sites[k]
-ov = overlap_sites(z_loop_sites, x_string_m)
+ov = overlap_sites(z_loop_sites, x_string_e)
 
 print("\n=== Auto-picked braiding ingredients ===")
-print("X-string (open, creates m-pair):", x_string_m)
-print("Chosen plaquette index k:", k)
-print("Z-loop sites (plaquette stabilizer):", z_loop_sites)
+print("X-string (open, creates e-pair):", x_string_e)
+print("Chosen star index k:", k)
+print("Z-loop sites (star stabilizer):", z_loop_sites)
 print("Overlap sites:", ov, " (count =", len(ov), ")")
 print("Odd overlap? ", (len(ov) % 2 == 1))
 
@@ -99,13 +103,13 @@ def measure_all(x_sites, z_sites):
 
 # Cases:
 # A) ground state
-# B) m-pair only (open X-string)
-# C) Z-loop only (plaquette stabilizer, must be invisible)
-# D) m-pair + Z-loop (should have same anyons as B)
+# B) e-pair only (open X-string)
+# C) Z-loop only (star stabilizer, must be invisible)
+# D) e-pair + Z-loop (should have same anyons as B)
 exp_A = measure_all([], [])
-exp_B = measure_all(x_string_m, [])
+exp_B = measure_all(x_string_e, [])
 exp_C = measure_all([], z_loop_sites)
-exp_D = measure_all(x_string_m, z_loop_sites)
+exp_D = measure_all(x_string_e, z_loop_sites)
 
 def split(expvals):
     return expvals[:n_x], expvals[n_x:]
@@ -117,21 +121,21 @@ xD, zD = split(exp_D)
 
 print("\n=== Stabilizer sanity checks ===")
 print("Ground (A):          #X-viol, #Z-viol =", count_violations(xA, zA))
-print("m-pair only (B):     #X-viol, #Z-viol =", count_violations(xB, zB), "  (expect 0,2)")
+print("e-pair only (B):     #X-viol, #Z-viol =", count_violations(xB, zB), "  (expect 0,2)")
 print("Z-loop only (C):     #X-viol, #Z-viol =", count_violations(xC, zC), "  (expect 0,0)")
-print("m-pair + Z-loop (D): #X-viol, #Z-viol =", count_violations(xD, zD), "  (expect 0,2)")
+print("e-pair + Z-loop (D): #X-viol, #Z-viol =", count_violations(xD, zD), "  (expect 0,2)")
 
-# Hard assertions (these are the ones that should always hold)
+# Hard assertions (must always hold)
 assert count_violations(xC, zC) == (0, 0), "Z-loop is not excitation-free (not a true stabilizer loop)."
-assert count_violations(xB, zB) == (0, 2), "Open X-string did not create exactly an m-pair."
+assert count_violations(xB, zB) == (0, 2), "Open X-string did not create exactly an e-pair."
 assert count_violations(xD, zD) == (0, 2), "Adding the Z-loop changed local anyon content (should not)."
-assert (len(ov) % 2 == 1), "Overlap is not odd; adjust x_string_m or loop selection."
+assert (len(ov) % 2 == 1), "Overlap is not odd; adjust x_string_e or loop selection."
 
-print("\nAll checks passed: you have a contractible Z-loop with odd intersection with the m-string.\n"
+print("\nAll checks passed: you have a contractible Z-loop with odd intersection with the e-string.\n"
       "This encodes the mutual braiding phase (-1) at the operator-algebra level.\n")
 
 # ------------------------------------------------------------
-# Plot (use case D: m-pair + Z-loop)
+# Plot (use case D: e-pair + Z-loop)
 # ------------------------------------------------------------
 fig, ax = excitation_plot(
     xD, zD,
@@ -140,11 +144,11 @@ fig, ax = excitation_plot(
 )
 
 # Draw open X-string (red)
-mx, my = zip(*x_string_m)
+mx, my = zip(*x_string_e)
 ax.plot(mx, my, color="firebrick", linewidth=6, zorder=5)
 ax.scatter(mx, my, color="firebrick", s=80, zorder=6)
 
-# Draw the plaquette boundary as a closed blue loop (ordered as given; close it)
+# Draw the star boundary as a closed blue loop (ordered as given; close it)
 loop_poly = polygon_edges(z_loop_sites)
 lx, ly = zip(*loop_poly)
 ax.plot(lx, ly, color="steelblue", linewidth=4, zorder=4, alpha=0.8)

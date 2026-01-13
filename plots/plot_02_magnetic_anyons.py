@@ -1,4 +1,4 @@
-# Graph 2: Electric anyon pair (single Z flips two X-groups)
+# Graph 2: Magnetic anyon pair (single Z flips two X-groups)
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -47,5 +47,5 @@ fig, ax = excitation_plot(
 # Mark the physical location of the applied Z
 ax.scatter(*zip(*single_z), color="steelblue", s=120, zorder=5)
 
-plt.title("Fig 2: Electric anyon pair from a single Z")
+plt.title("Fig 2: Magnetic anyon pair from a single Z")
 plt.show()

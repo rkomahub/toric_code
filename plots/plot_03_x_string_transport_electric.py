@@ -1,4 +1,4 @@
-# Fig 3: Straight Z-string (same endpoints, same electric anyons)
+# Fig 3: X-string transporting an electric anyon pair
 
 import matplotlib.pyplot as plt
 
@@ -9,16 +9,16 @@ from .common import excitation_plot
 width, height = 6, 4
 dev = make_device(width, height)
 
-# ---- Straight Z string ----
-z_string = [(1, 2), (2, 2), (3, 2), (4, 2)]
-# ---------------------------
+# ---- X string path (operator) ----
+x_string = [(1, 2), (2, 2), (3, 2), (4, 2)]
+# ---------------------------------
 
 qnode = make_excitation_qnode(
     dev,
     width,
     height,
-    x_sites=[],
-    z_sites=z_string,
+    x_sites=x_string,
+    z_sites=[],
 )
 
 expvals = qnode()
@@ -29,7 +29,7 @@ z_expvals = expvals[n_x:]
 
 # Pretty printing
 fmt = lambda arr: [f"{v:+.3f}" for v in arr]
-print("Z string (straight):", z_string)
+print("X string:", x_string)
 print("X-group expvals:", fmt(x_expvals))
 print("Z-group expvals:", fmt(z_expvals))
 
@@ -43,10 +43,10 @@ fig, ax = excitation_plot(
     height,
 )
 
-# Draw Z-string path (Z ops = blue)
-xs, ys = zip(*z_string)
-ax.plot(xs, ys, color="steelblue", linewidth=6, zorder=4)
-ax.scatter(xs, ys, color="steelblue", s=80, zorder=5)
+# Draw X-string path (tutorial convention: X ops = red)
+xs, ys = zip(*x_string)
+ax.plot(xs, ys, color="firebrick", linewidth=6, zorder=4)
+ax.scatter(xs, ys, color="firebrick", s=80, zorder=5)
 
-plt.title("Fig 3: Straight Z-string (electric anyon pair)")
+plt.title("Fig 3: X-string transporting an electric anyon pair")
 plt.show()
